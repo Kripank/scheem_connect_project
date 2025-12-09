@@ -1,0 +1,20 @@
+{
+  "name": "gemini-backend",
+  "version": "1.0.0",
+  "description": "Backend server for SchemeConnect AI assistant using Gemini",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^4.19.0",
+    "react-markdown": "^10.1.0"
+  }
+}
