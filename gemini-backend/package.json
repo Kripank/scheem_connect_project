@@ -1,9 +1,10 @@
 {
   "name": "gemini-backend",
   "version": "1.0.0",
+   "type": "module",
   "description": "Backend server for SchemeConnect AI assistant using Gemini",
   "main": "server.js",
-  "type": "module",
+ 
   "scripts": {
     "start": "node server.js"
   },
