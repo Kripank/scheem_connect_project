@@ -69,7 +69,7 @@ const SCHEMES = [
     maxIncome: null,
     educationRequired: "Preferably educated / business-minded but open",
     benefit: "Funding, tax exemptions, entrepreneurship support.",
-    eligibility: "Recognized Private Ltd, LLP, or Partnership.",
+    eligibility: "Graduates, diploma holders, or students with an innovative business idea seeking startup support",
     link: "https://www.startupindia.gov.in/",
   },
   {
