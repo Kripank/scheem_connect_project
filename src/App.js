@@ -7,6 +7,9 @@ import {
 } from "react-router-dom";
 import ChatBot from "./ChatBot";
 import ActsPage from "./pages/ActsPage";
+import normalizeCategory from "./utils/normalizeCategory.js";
+
+
 
 // ---------------- ICON IMPORTS ----------------
 import {
@@ -48,19 +51,370 @@ const allGovernmentSchemes = [
   { id: 104, name: "Startup India", category: "Business & Self-employed", benefit: "Funding, tax exemptions, entrepreneurship support.", eligibility: "Recognized Private Ltd, LLP, or Partnership.", link: "https://www.startupindia.gov.in/" },
   { id: 105, name: "National Pension Scheme (NPS)", category: "Benefits & Social development", benefit: "Voluntary pension scheme for long-term savings.", eligibility: "Indian citizens aged 18-70.", link: "https://npscra.nsdl.co.in/" },
   { id: 106, name: "Pradhan Mantri Awas Yojana (PMAY)", category: "Housing & Local services", benefit: "Affordable housing for EWS, LIG, MIG.", eligibility: "People who don't own a pucca house.", link: "https://pmaymis.gov.in/" },
+  { id: 107, name: "Sukanya Samriddhi Yojana (SSY)", category: "Benefits & Social Development", benefit: "High-interest savings scheme for girl child education and marriage.", eligibility: "Parents or guardians of a girl child below 10 years.", link: "https://www.india.gov.in/spotlight/sukanya-samriddhi-yojana"},
+  { id: 108, name: "Beti Bachao Beti Padhao", category: "Women & Child Welfare", benefit: "Promotes education, survival, and welfare of girl children.", eligibility: "Families with girl children across India.", link: "https://wcd.nic.in/bbbp-schemes"},
+    { id: 109, name: "Pradhan Mantri Mudra Yojana (PMMY)", category: "Business & Self-employed", benefit: "Collateral-free loans up to ₹10 lakh for small businesses.",eligibility: "Non-corporate, non-farm micro and small enterprises.", link: "https://www.mudra.org.in/"},
+    { id: 110,name: "Skill India Mission",category: "Education & Learning",benefit: "Free skill training and certification to improve employability.", eligibility: "Indian youth and job seekers.", link: "https://www.skillindia.gov.in/"},
+    { id: 111,name: "Atal Pension Yojana (APY)",category: "Benefits & Social Development",benefit: "Guaranteed monthly pension after retirement.",eligibility: "Indian citizens aged 18–40 working in the unorganized sector.",link: "https://www.npscra.nsdl.co.in/scheme-details.php"},
+    { id: 112,name: "Pradhan Mantri Fasal Bima Yojana (PMFBY)",category: "Agriculture, Rural & Environment",benefit: "Crop insurance coverage against natural calamities and crop loss.",eligibility: "All farmers including tenant and sharecroppers.",link: "https://pmfby.gov.in/"},
+    { id: 113,name: "Digital India Mission",category: "Technology & Governance",benefit: "Provides digital access to government services and infrastructure.",eligibility: "All Indian citizens.",link: "https://www.digitalindia.gov.in/"},
+    { id: 114,name: "National Scholarship Portal (NSP)",category: "Education & Learning",benefit: "Centralized platform for multiple government scholarships.",eligibility: "School and college students meeting scholarship criteria.",link: "https://scholarships.gov.in/"},
+  {
+    id: 115,
+    name: "PM POSHAN (Mid Day Meal Scheme)",
+    category: "Education & Learning",
+    benefit: "Free nutritious meals to improve school attendance and nutrition.",
+    eligibility: "Students of government and government-aided schools.",
+    link: "https://pmposhan.education.gov.in/"
+  },
+  {
+    id: 116,
+    name: "Samagra Shiksha Abhiyan",
+    category: "Education & Learning",
+    benefit: "Improves school education quality and infrastructure.",
+    eligibility: "Students and teachers of government and aided schools.",
+    link: "https://samagra.education.gov.in/"
+  },
+  {
+    id: 117,
+    name: "PM eVIDYA",
+    category: "Education & Learning",
+    benefit: "Digital education through TV, online platforms, and radio.",
+    eligibility: "Students and teachers across India.",
+    link: "https://www.education.gov.in/pm-vidya"
+  },
+  {
+    id: 118,
+    name: "SWAYAM",
+    category: "Education & Learning",
+    benefit: "Free online courses from school to postgraduate level.",
+    eligibility: "Any learner or professional in India.",
+    link: "https://swayam.gov.in/"
+  },
+  {
+    id: 119,
+    name: "SWAYAM PRABHA",
+    category: "Education & Learning",
+    benefit: "24×7 educational TV channels for learning support.",
+    eligibility: "Students and competitive exam aspirants.",
+    link: "https://www.swayamprabha.gov.in/"
+  },
+  {
+    id: 120,
+    name: "National Means-cum-Merit Scholarship (NMMS)",
+    category: "Education & Learning",
+    benefit: "Scholarship to prevent dropouts among economically weaker students.",
+    eligibility: "Meritorious students from low-income families.",
+    link: "https://scholarships.gov.in/"
+  },
+  {
+    id: 121,
+    name: "AICTE Pragati Scholarship for Girls",
+    category: "Education & Learning",
+    benefit: "₹50,000 per year financial support for girl students.",
+    eligibility: "Girl students in AICTE-approved technical institutions.",
+    link: "https://www.aicte-india.org/"
+  },
+  {
+    id: 122,
+    name: "Prime Minister’s Research Fellowship (PMRF)",
+    category: "Education & Learning",
+    benefit: "High-value fellowship to promote quality research.",
+    eligibility: "Meritorious students pursuing PhD in top institutions.",
+    link: "https://pmrf.in/"
+  },
+  {
+  id: 123,
+  name: "National Health Mission (NHM)",
+  category: "Health & Wellness",
+  benefit: "Improves access to quality healthcare services, especially for rural and urban poor.",
+  eligibility: "All citizens, with focus on women, children, and vulnerable groups.",
+  link: "https://nhm.gov.in/"
+},
+{
+  id: 124,
+  name: "Janani Suraksha Yojana (JSY)",
+  category: "Health & Wellness",
+  benefit: "Financial assistance to promote institutional delivery for pregnant women.",
+  eligibility: "Pregnant women, especially from low-income households.",
+  link: "https://nhm.gov.in/index1.php?lang=1&level=3&sublinkid=841"
+},
+{
+  id: 125,
+  name: "Pradhan Mantri Surakshit Matritva Abhiyan (PMSMA)",
+  category: "Health & Wellness",
+  benefit: "Free antenatal care services for pregnant women on fixed days.",
+  eligibility: "All pregnant women in their 2nd and 3rd trimester.",
+  link: "https://pmsma.nhp.gov.in/"
+},
+{
+  id: 126,
+  name: "Mission Indradhanush",
+  category: "Health & Wellness",
+  benefit: "Free vaccination for children and pregnant women.",
+  eligibility: "Children below 2 years and pregnant women.",
+  link: "https://nhm.gov.in/index1.php?lang=1&level=2&sublinkid=824"
+},
+{
+  id: 127,
+  name: "National Tuberculosis Elimination Programme (NTEP)",
+  category: "Health & Wellness",
+  benefit: "Free diagnosis and treatment for tuberculosis.",
+  eligibility: "All TB patients in India.",
+  link: "https://tbcindia.gov.in/"
+},
+{
+  id: 128,
+  name: "National AIDS Control Programme (NACP)",
+  category: "Health & Wellness",
+  benefit: "Prevention, testing, and free treatment for HIV/AIDS.",
+  eligibility: "All citizens, especially high-risk groups.",
+  link: "https://naco.gov.in/"
+},
+{
+  id: 129,
+  name: "Ayushman Bharat – Health and Wellness Centres (HWCs)",
+  category: "Health & Wellness",
+  benefit: "Free primary healthcare services including maternal care, NCD screening, and essential medicines.",
+  eligibility: "All citizens, especially rural and underserved populations.",
+  link: "https://ab-hwc.nhp.gov.in/"
+},
+{
+  id: 130,
+  name: "Make in India",
+  category: "Infrastructure & Industries",
+  benefit: "Promotes manufacturing and industrial development in India.",
+  eligibility: "Indian and foreign companies investing in manufacturing sectors.",
+  link: "https://www.makeinindia.com/"
+},
+{
+  id: 131,
+  name: "Production Linked Incentive (PLI) Scheme",
+  category: "Infrastructure & Industries",
+  benefit: "Financial incentives for boosting domestic manufacturing.",
+  eligibility: "Manufacturers in notified sectors meeting production targets.",
+  link: "https://www.investindia.gov.in/production-linked-incentives-schemes-india"
+},
+{
+  id: 132,
+  name: "National Infrastructure Pipeline (NIP)",
+  category: "Infrastructure & Industries",
+  benefit: "Large-scale infrastructure development in transport, energy, and urban sectors.",
+  eligibility: "Infrastructure projects by public and private entities.",
+  link: "https://www.nip.gov.in/"
+},
+{
+  id: 133,
+  name: "Pradhan Mantri Gati Shakti",
+  category: "Infrastructure & Industries",
+  benefit: "Integrated infrastructure planning for faster project execution.",
+  eligibility: "Infrastructure ministries, logistics and industrial projects.",
+  link: "https://gati.gov.in/"
+},
+{
+  id: 134,
+  name: "UDYAM Registration (MSME)",
+  category: "Infrastructure & Industries",
+  benefit: "Official recognition and benefits for MSMEs including subsidies and loans.",
+  eligibility: "Micro, Small, and Medium Enterprises.",
+  link: "https://udyamregistration.gov.in/"
+},
+{
+  id: 135,
+  name: "Credit Linked Capital Subsidy Scheme (CLCSS)",
+  category: "Infrastructure & Industries",
+  benefit: "Capital subsidy for technology upgradation in MSMEs.",
+  eligibility: "MSMEs upgrading plant and machinery.",
+  link: "https://msme.gov.in/schemes/credit-linked-capital-subsidy-scheme"
+},
+{
+  id: 136,
+  name: "National Industrial Corridor Development Programme (NICDP)",
+  category: "Infrastructure & Industries",
+  benefit: "World-class industrial corridors and smart cities development.",
+  eligibility: "Industrial units and investors in corridor regions.",
+  link: "https://nicdc.in/"
+},
+{
+  id: 137,
+  name: "Startup India Seed Fund Scheme",
+  category: "Infrastructure & Industries",
+  benefit: "Seed funding support for early-stage startups.",
+  eligibility: "DPIIT-recognized startups.",
+  link: "https://seedfund.startupindia.gov.in/"
+},
+{
+  id: 138,
+  name: "Soil Health Card Scheme",
+  category: "Agriculture, Rural & Environment",
+  benefit: "Provides soil testing reports and recommendations to improve soil fertility and crop yield.",
+  eligibility: "All farmers across India.",
+  link: "https://soilhealth.dac.gov.in/"
+},
+{
+  id: 139,
+  name: "Paramparagat Krishi Vikas Yojana (PKVY)",
+  category: "Agriculture, Rural & Environment",
+  benefit: "Promotes organic farming with financial and technical support.",
+  eligibility: "Farmers practicing or willing to adopt organic farming.",
+  link: "https://pgsindia-ncof.gov.in/"
+},
+{
+  id: 140,
+  name: "National Mission for Sustainable Agriculture (NMSA)",
+  category: "Agriculture, Rural & Environment",
+  benefit: "Supports climate-resilient agricultural practices.",
+  eligibility: "Farmers facing climate-related agricultural challenges.",
+  link: "https://nmsa.dac.gov.in/"
+},
+{
+  id: 141,
+  name: "Pradhan Mantri Krishi Sinchai Yojana (PMKSY)",
+  category: "Agriculture, Rural & Environment",
+  benefit: "Improves irrigation facilities and water-use efficiency.",
+  eligibility: "Farmers and agricultural landholders.",
+  link: "https://pmksy.gov.in/"
+},
+{
+  id: 142,
+  name: "National Livestock Mission (NLM)",
+  category: "Agriculture, Rural & Environment",
+  benefit: "Enhances livestock productivity and supports animal husbandry.",
+  eligibility: "Livestock farmers and entrepreneurs.",
+  link: "https://nlm.udyamimitra.in/"
+},
+{
+  id: 143,
+  name: "Pradhan Mantri Garib Kalyan Anna Yojana (PMGKAY)",
+  category: "Benefits & Social development",
+  benefit: "Provides free food grains to poor households.",
+  eligibility: "Priority households under NFSA.",
+  link: "https://nfsa.gov.in/"
+},
+{
+  id: 144,
+  name: "Deendayal Antyodaya Yojana – National Rural Livelihood Mission (DAY-NRLM)",
+  category: "Benefits & Social development",
+  benefit: "Promotes self-employment and skill development among rural poor.",
+  eligibility: "Rural households below the poverty line.",
+  link: "https://aajeevika.gov.in/"
+},
+{
+  id: 145,
+  name: "Deendayal Antyodaya Yojana – National Urban Livelihood Mission (DAY-NULM)",
+  category: "Benefits & Social development",
+  benefit: "Employment and skill training for urban poor.",
+  eligibility: "Urban poor households.",
+  link: "https://nulm.gov.in/"
+},
+{
+  id: 146,
+  name: "Pradhan Mantri Matru Vandana Yojana (PMMVY)",
+  category: "Benefits & Social development",
+  benefit: "Cash incentive for pregnant and lactating mothers.",
+  eligibility: "Pregnant women for first live birth.",
+  link: "https://pmmvy.wcd.gov.in/"
+},
+{
+  id: 147,
+  name: "National Social Assistance Programme (NSAP)",
+  category: "Benefits & Social development",
+  benefit: "Financial assistance to elderly, widows, and persons with disabilities.",
+  eligibility: "Economically weaker sections.",
+  link: "https://nsap.nic.in/"
+},
+{
+  id: 148,
+  name: "Stand Up India Scheme",
+  category: "Business & Self-employed",
+  benefit: "Bank loans between ₹10 lakh and ₹1 crore to SC/ST and women entrepreneurs.",
+  eligibility: "SC/ST and women entrepreneurs setting up new enterprises.",
+  link: "https://www.standupmitra.in/"
+},
+{
+  id: 149,
+  name: "PM SVANidhi",
+  category: "Business & Self-employed",
+  benefit: "Working capital loans for street vendors.",
+  eligibility: "Street vendors operating in urban areas.",
+  link: "https://pmsvanidhi.mohua.gov.in/"
+},
+{
+  id: 150,
+  name: "Credit Guarantee Scheme for Micro and Small Enterprises (CGTMSE)",
+  category: "Business & Self-employed",
+  benefit: "Collateral-free credit for MSMEs.",
+  eligibility: "Micro and Small Enterprises.",
+  link: "https://www.cgtmse.in/"
+},
+{
+  id: 151,
+  name: "Prime Minister’s Employment Generation Programme (PMEGP)",
+  category: "Business & Self-employed",
+  benefit: "Financial assistance to set up new micro-enterprises.",
+  eligibility: "Unemployed youth and self-help groups.",
+  link: "https://www.kviconline.gov.in/pmegpeportal/"
+},
+{
+  id: 152,
+  name: "National Small Industries Corporation (NSIC) Schemes",
+  category: "Business & Self-employed",
+  benefit: "Marketing, financial, and technical support to MSMEs.",
+  eligibility: "Registered MSMEs.",
+  link: "https://www.nsic.co.in/"
+}
 ];
 
-const featuredSchemes = allGovernmentSchemes.slice(0, 3);
-const trendingSchemes = allGovernmentSchemes.map((s) => s.name);
 
+const normalizedSchemes = allGovernmentSchemes.map((s) => ({
+  ...s,
+  normalizedCategory: normalizeCategory(s.category),
+}));
+
+
+const featuredSchemes = normalizedSchemes.slice(0, 3);
+const trendingSchemes = normalizedSchemes.map((s) => s.name);
+
+// ✅ FIXED categories (App.js)
 const categories = [
-  { title: "Agriculture, Rural & Environment", icon: Wheat, color: "blue" },
-  { title: "Benefits & Social development", icon: Users, color: "red" },
-  { title: "Business & Self-employed", icon: Briefcase, color: "green" },
-  { title: "Education & Learning", icon: BookOpen, color: "pink" },
-  { title: "Health & Wellness", icon: HeartPulse, color: "cyan" },
-  { title: "Infrastructure & Industries", icon: Factory, color: "orange" },
+  {
+    label: "Agriculture, Rural & Environment",
+    value: normalizeCategory("Agriculture, Rural & Environment"),
+    icon: Wheat,
+    color: "blue",
+  },
+  {
+    label: "Benefits & Social Development",
+    value: normalizeCategory("Benefits & Social Development"),
+    icon: Users,
+    color: "red",
+  },
+  {
+    label: "Business & Self-employed",
+    value: normalizeCategory("Business & Self-employed"),
+    icon: Briefcase,
+    color: "green",
+  },
+  {
+    label: "Education & Learning",
+    value: normalizeCategory("Education & Learning"),
+    icon: BookOpen,
+    color: "pink",
+  },
+  {
+    label: "Health & Wellness",
+    value: normalizeCategory("Health & Wellness"),
+    icon: HeartPulse,
+    color: "cyan",
+  },
+  {
+    label: "Infrastructure & Industries",
+    value: normalizeCategory("Infrastructure & Industries"),
+    icon: Factory,
+    color: "orange",
+  },
 ];
+
 
 // ---------- IMAGE SLIDER ----------
 const ImageSlider = () => {
@@ -112,6 +466,8 @@ const NavItem = ({ title, active, onClick }) => (
   </button>
 );
 
+
+
 // ---------- SCHEME CARD ----------
 const SchemeCard = ({ scheme }) => (
   <div className="bg-white border rounded-lg shadow-sm p-5 hover:shadow-lg transition">
@@ -138,7 +494,7 @@ const colorClasses = {
   orange: "bg-orange-50 border-orange-300 text-orange-900",
 };
 
-const CategoryCard = ({ icon: Icon, title, color, onClick, active }) => (
+const CategoryCard = ({ icon: Icon, label, color, onClick, active }) => (
   <div
     onClick={onClick}
     className={`p-6 transition cursor-pointer flex flex-col items-center rounded-xl border-2 ${
@@ -148,7 +504,7 @@ const CategoryCard = ({ icon: Icon, title, color, onClick, active }) => (
     <div className="p-3 bg-white rounded-full mb-3">
       <Icon className="w-6 h-6" />
     </div>
-    <h3 className="text-sm font-semibold">{title}</h3>
+    <h3 className="text-sm font-semibold">{label}</h3>
   </div>
 );
 
@@ -165,9 +521,15 @@ const TabContent = ({ activeTab, selectedCategory, setSelectedCategory, schemeRe
           </section>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-            {categories.map((c, i) => (
-              <CategoryCard key={i} {...c} active={selectedCategory === c.title}
-                onClick={() => setSelectedCategory(c.title)} />
+            {categories.map((c, i) => (<CategoryCard
+  key={i}
+  icon={c.icon}
+  label={c.label}
+  color={c.color}
+  active={selectedCategory === c.value}
+  onClick={() => setSelectedCategory(c.value)}
+/>
+
             ))}
           </div>
 
@@ -179,7 +541,7 @@ const TabContent = ({ activeTab, selectedCategory, setSelectedCategory, schemeRe
               </button>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-                {allGovernmentSchemes.filter((s) => s.category === selectedCategory).map((s) => (
+                {normalizedSchemes.filter((s) => normalizeCategory(s.category) === selectedCategory).map((s) => (
                   <SchemeCard key={s.id} scheme={s} />
                 ))}
               </div>
@@ -275,6 +637,18 @@ const App = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const schemeRef = React.useRef(null);
 
+  useEffect(() => {
+    if (searchQuery) {
+      window.scrollTo({ top: 10, behavior: "smooth" });
+    }
+  }, [searchQuery]);
+
+    const clearSearch = () => {
+      setSearchQuery("");
+      setSelectedCategory(null);
+    };
+
+
   const navigationItems = ["Home", "Schemes", "Acts & Rules", "About", "Contact"];
 
   const scrollToSchemes = () => {
@@ -286,9 +660,16 @@ const App = () => {
     } else doScroll();
   };
 
-  const filteredSchemes = allGovernmentSchemes.filter((s) =>
-    s.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+const filteredSchemes = normalizedSchemes.filter((s) =>
+  (
+    s.name +
+    s.benefit +
+    s.eligibility
+  )
+    .toLowerCase()
+    .includes(searchQuery.toLowerCase())
+);
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -332,10 +713,22 @@ const App = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
+  
+              <div className="flex items-center gap-2 pr-4">
+                {searchQuery && (
+                  <button
+                    onClick={clearSearch}
+                    className="text-gray-400 hover:text-red-600 text-xl font-bold"
+                    aria-label="Clear search"
+                  >
+                    ×
+                  </button>
+                )}
 
-              <button className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-700 text-white rounded-full font-semibold">
-                Search
-              </button>
+                <button className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-700 text-white rounded-full font-semibold">
+                  Search
+                </button>
+            </div>
             </div>
 
             <h3 className="text-white text-lg font-semibold mt-4">Trending:</h3>
@@ -348,9 +741,9 @@ const App = () => {
               >
                 {[...trendingSchemes, ...trendingSchemes].map((t, i) => (
                   <button
-                    key={i}
+                      key={i}
                     onClick={() => {
-                      const selected = allGovernmentSchemes.find(s => s.name === t);
+                      const selected = normalizedSchemes.find(s => s.name === t);
                       if (selected?.link) window.open(selected.link, "_blank", "noopener");
                     }}
                     className="bg-white/20 px-4 py-2 rounded-full hover:bg-white/30 transition">
@@ -375,16 +768,21 @@ const App = () => {
         </div>
       )}
 
-      {activeTab !== "About" && activeTab !== "Contact" && <ImageSlider />}
+        {!searchQuery && activeTab !== "About" && activeTab !== "Contact" && (
+          <ImageSlider />
+        )}
 
-      <main className="container mx-auto p-6">
-        <TabContent
-          activeTab={activeTab}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          schemeRef={schemeRef}
-        />
-      </main>
+        {!searchQuery && (
+          <main className="container mx-auto p-6">
+            <TabContent
+              activeTab={activeTab}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              schemeRef={schemeRef}
+            />
+          </main>
+        )}
+
 
       <footer className="bg-gray-900 text-gray-400 py-6 text-center mt-16">
         © {new Date().getFullYear()} GovConnect Portal.
